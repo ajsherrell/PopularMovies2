@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">PopularMovies2</string>
+
+    <!--menu strings-->
+    <string name="popular">Popular</string>
+    <string name="rating">Rating</string>
+    <string name="favorite">Favorite</string>
+
+    <!--errors-->
+    <string name="error_cannot_load_movies">Error! Cannot load movies.</string>
+    <string name="no_internet_connection">No internet connection</string>
+
+    <!--settings-->
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="refresh">Refresh</string>
+    <string name="movie_poster">movie_poster</string>
+
+    <!--xml-->
+    <string name="user_rating">User Rating: </string>
+    <string name="release_date">Release Date: </string>
+
+
+</resources>
