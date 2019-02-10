@@ -16,10 +16,17 @@ public class Constants {
     public static final String MY_LANGUAGE = "en-US";
     public static final String SORT_BY_POPULAR = "popular";
     public static final String SORT_BY_RATING = "top_rated";
+    public static final String SORT_BY_FAVORITE = "favorite";
     public static final String RESULTS = "results";
+    public static final String PAGE = "page";
+    public static final String REVIEW = "reviews";
+    public static final String VIDEO = "videos";
 
     // poster size
     public static final String POSTER_SIZE_THUMBNAIL = "w185/";
     public static final String POSTER_SIZE_REGULAR = "w500/";
+
+    //database strings
+    public static final Object LOCK = new Object();
 
 }

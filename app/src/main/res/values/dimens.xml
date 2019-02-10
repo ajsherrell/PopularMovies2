@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="error_tv_padding">16dp</dimen>
+    <dimen name="error_tv_textSize">20sp</dimen>
+    <dimen name="progress_bar_width_height">42dp</dimen>
+    <dimen name="details_padding">8dp</dimen>
+    <dimen name="display_text_size">22sp</dimen>
+    <dimen name="movie_poster_size">42dp</dimen>
+    <dimen name="view_divider_size">1dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="card_corner_radius">5dp</dimen>
+    <dimen name="card_max_elevation">1dp</dimen>
+    <dimen name="card_elevation">1dp</dimen>
+</resources>

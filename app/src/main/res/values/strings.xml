@@ -18,6 +18,8 @@
     <!--xml-->
     <string name="user_rating">User Rating: </string>
     <string name="release_date">Release Date: </string>
+    <string name="reviews">Reviews: </string>
+    <string name="trailers">Movie Trailer</string>
 
 
 </resources>
