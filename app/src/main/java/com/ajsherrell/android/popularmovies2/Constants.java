@@ -1,5 +1,7 @@
 package com.ajsherrell.android.popularmovies2;
 
+import com.ajsherrell.android.popularmovies2.model.Movie;
+
 public class Constants {
 
     // my api key
@@ -25,6 +27,9 @@ public class Constants {
     // poster size
     public static final String POSTER_SIZE_THUMBNAIL = "w185/";
     public static final String POSTER_SIZE_REGULAR = "w500/";
+
+    // movie ID
+    public static final int MOVIE_ID = Movie.getId();
 
     //database strings
     public static final Object LOCK = new Object();

@@ -7,8 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.ajsherrell.android.popularmovies2.adapters.TrailerAdapter;
 import com.ajsherrell.android.popularmovies2.data.FavoriteMovie;
 import com.ajsherrell.android.popularmovies2.data.MovieDatabase;
 import com.ajsherrell.android.popularmovies2.databinding.ActivityMovieDetailsBinding;
@@ -19,6 +21,8 @@ import com.ajsherrell.android.popularmovies2.utilities.AppExecutor;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import static com.ajsherrell.android.popularmovies2.R.layout.activity_movie_details;
 
 public class MovieDetails extends AppCompatActivity {
 
@@ -34,23 +38,35 @@ public class MovieDetails extends AppCompatActivity {
     private ImageView star;
     private boolean isFavortie = false;
 
+    // movie
+    private TextView id;
     private TextView originalTitle;
     private ImageView moviePoster;
     private TextView plotOverview;
     private TextView userRating;
     private TextView releaseDate;
 
+    // reviews
+    private TextView author;
+    private TextView content;
+
+    // trailers
+    private ListView trailer;
+    private TrailerAdapter tAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_details);
+        setContentView(activity_movie_details);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_movie_details);
 
         Intent intent = getIntent();
         if (intent != null) {
             moviePage = intent.getParcelableExtra("Movie");
+            reviews = intent.getParcelableArrayListExtra("Review");
+            trailers = intent.getParcelableArrayListExtra("Trailer");
         }
 
         mDb = MovieDatabase.getInstance(getApplicationContext());
@@ -64,7 +80,7 @@ public class MovieDetails extends AppCompatActivity {
         });
 
         populateUI();
-        Log.d(TAG, "onCreate: !!!!" + moviePage);
+        Log.d(TAG, "onCreate: !!!!" + moviePage + reviews + trailers);
     }
 
     private void setFavorite(Boolean favorite) {
@@ -78,7 +94,7 @@ public class MovieDetails extends AppCompatActivity {
     }
 
     public void populateUI() {
-        if (moviePage != null) {
+        if (moviePage != null && reviews != null && trailers != null) {
             if (originalTitle != null) {
                 mBinding.originalTitle.setText(moviePage.getOriginalTitle());
             }
@@ -93,6 +109,21 @@ public class MovieDetails extends AppCompatActivity {
 
             if (releaseDate != null) {
                 mBinding.releaseDate.setText(moviePage.getReleaseDate());
+            }
+
+            if (author != null) {
+                author.findViewById(R.id.author);
+                author.setText(reviews.getAuthor());
+            }
+
+            if (content != null) {
+                content.findViewById(R.id.content);
+                content.setText(reviews.getContent());
+            }
+
+            if (trailer != null) {
+                trailer.findViewById(R.id.trailerListView);
+                trailer.setAdapter(tAdapter);
             }
         }
         String poster = moviePage.getPosterThumbnail();

@@ -140,44 +140,15 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <TextView
-                    android:id="@+id/review"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:text="TextView"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/reviewLabel"
-                    app:layout_constraintEnd_toEndOf="@+id/recyclerView"
-                    tools:text="Review Content" />
+                <include android:id="@+id/review_layout"
+                    layout="@layout/review"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
-                <TextView
-                    android:id="@+id/reviewLabel"
+                <include android:id="trailer_layout"
+                    layout="@layout/trailer"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/reviews"
-                    android:textAllCaps="false"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textSize="22sp"
-                    app:layout_constraintEnd_toEndOf="@+id/recyclerView"
-                    app:layout_constraintStart_toStartOf="@+id/recyclerView"
-                    app:layout_constraintTop_toTopOf="@+id/recyclerView"
-                    tools:text="Reviews:" />
-
-                <TextView
-                    android:id="@+id/trailer_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="22dp"
-                    android:layout_marginLeft="22dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@color/colorAccent"
-                    android:text="@string/trailers"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                    app:layout_constraintBottom_toTopOf="@+id/star"
-                    app:layout_constraintStart_toEndOf="@+id/movie_poster_image_thumbnail" />
+                    android:layout_height="wrap_content"/>
 
             </android.support.v7.widget.RecyclerView>
 

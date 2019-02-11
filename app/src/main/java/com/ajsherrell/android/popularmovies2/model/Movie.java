@@ -6,7 +6,7 @@ import android.os.Parcelable;
 // used code from the Udacity AndroidFlavor example https://github.com/udacity/android-custom-arrayadapter/blob/parcelable/app/src/main/java/demo/example/com/customarrayadapter/AndroidFlavor.java
 public class Movie implements Parcelable {
 
-    private int mId;
+    private static int mId;
     private String mOriginalTitle;
     private String mPosterThumbnail;
     private String mPlotOverview;
@@ -58,7 +58,7 @@ public class Movie implements Parcelable {
         }
     };
 
-    public int getId() {
+    public static int getId() {
         return mId;
     }
 
