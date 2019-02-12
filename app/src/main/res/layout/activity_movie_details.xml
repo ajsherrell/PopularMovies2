@@ -128,7 +128,7 @@
 
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView"
+                android:id="@+id/reviewRecyclerView"
                 android:layout_width="395dp"
                 android:layout_height="105dp"
                 android:layout_marginStart="8dp"
@@ -144,6 +144,17 @@
                     layout="@layout/review"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
+
+            </android.support.v7.widget.RecyclerView>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/trailerRecyclerView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent">
 
                 <include android:id="trailer_layout"
                     layout="@layout/trailer"

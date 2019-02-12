@@ -58,4 +58,13 @@ public class ReviewAdapter extends RecyclerView.Adapter <ReviewAdapter.Viewholde
             mReviewContent = itemView.findViewById(R.id.content);
         }
     }
+
+    public void add(ArrayList<Review> data) {
+        this.reviewList = data;
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        reviewList.clear();
+    }
 }
