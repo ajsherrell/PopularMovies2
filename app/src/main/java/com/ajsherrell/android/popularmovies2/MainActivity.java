@@ -1,7 +1,6 @@
 package com.ajsherrell.android.popularmovies2;
 
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -23,9 +22,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ajsherrell.android.popularmovies2.adapters.MovieAdapter;
+import com.ajsherrell.android.popularmovies2.adapters.ReviewAdapter;
+import com.ajsherrell.android.popularmovies2.adapters.TrailerAdapter;
 import com.ajsherrell.android.popularmovies2.data.FavoriteMovie;
 import com.ajsherrell.android.popularmovies2.data.MovieDatabase;
 import com.ajsherrell.android.popularmovies2.model.Movie;
+import com.ajsherrell.android.popularmovies2.model.Review;
+import com.ajsherrell.android.popularmovies2.model.Trailer;
 import com.ajsherrell.android.popularmovies2.utilities.JSONUtils;
 import com.ajsherrell.android.popularmovies2.utilities.NetworkUtils;
 
@@ -34,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createMovieUrl;
+import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createReviewUrl;
+import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createTrailerUrl;
 import static java.lang.String.valueOf;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
@@ -49,6 +54,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private static ProgressBar mProgressBar;
 
     private MovieDatabase mDb;
+
+    private ArrayList<Review> reviews = new ArrayList<>();
+    private ArrayList<Trailer> trailers = new ArrayList<>();
+
+    private ReviewAdapter rAdapter;
+    private TrailerAdapter tAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +85,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView.setAdapter(mMovieAdapter);
 
         loadMovieData(Constants.SORT_BY_POPULAR);
+        loadReviewData(String.valueOf(Constants.MOVIE_ID));
+        loadTrailerData(String.valueOf(Constants.MOVIE_ID));
+
 
         mDb = MovieDatabase.getInstance(getApplicationContext());
         setupViewModel();
@@ -90,8 +104,20 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                     favoriteData = favoriteMovies;
                 }
                 loadMovieData(Constants.SORT_BY_FAVORITE);
+                loadReviewData(String.valueOf(Constants.MOVIE_ID));
+                loadTrailerData(String.valueOf(Constants.MOVIE_ID));
             }
         });
+    }
+
+    private void loadReviewData(String movieId) {
+        FetchReviewTask reviewTask = new FetchReviewTask();
+        reviewTask.execute(movieId);
+    }
+
+    private void loadTrailerData(String movieId) {
+        FetchTrailerTask trailerTask = new FetchTrailerTask();
+        trailerTask.execute(movieId);
     }
 
     private void loadMovieData(String sortBy) {
@@ -162,6 +188,78 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             mMovieAdapter.notifyDataSetChanged();
             super.onPostExecute(movieData);
             Log.d(TAG, "onPostExecute: something is wrong!!!!!" + movieData);
+        }
+    }
+
+    //review asynctask
+    public class FetchReviewTask extends AsyncTask<String, Void, ArrayList<Review>> {
+
+        @Override
+        protected ArrayList<Review> doInBackground(String... strings) {
+            if (strings.length == 0) {
+                return null;
+            }
+            String review = strings[0];
+            URL reviewRequestUrl = createReviewUrl(valueOf(review));
+
+            try {
+                String jsonReviewResponse = NetworkUtils.makeHttpRequest(reviewRequestUrl);
+
+                reviews = JSONUtils.extractReviewDataFromJson(MainActivity.this, jsonReviewResponse);
+
+                return reviews;
+            } catch (Exception e) {
+                Log.d(TAG, "doInBackground: !!!!" + reviews);
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Review> reviewData) {
+            rAdapter.clear();
+            if (reviewData != null) {
+                reviews = reviewData;
+                rAdapter.add(reviewData);
+            }
+            rAdapter.notifyDataSetChanged();
+            super.onPostExecute(reviews);
+        }
+    }
+
+    //trailer asynctask
+    public class FetchTrailerTask extends AsyncTask<String, Void, ArrayList<Trailer>> {
+
+        @Override
+        protected ArrayList<Trailer> doInBackground(String... strings) {
+            if (strings.length == 0) {
+                return null;
+            }
+            String trailer = strings[0];
+            URL trailerRequestUrl = createTrailerUrl(valueOf(trailer));
+
+            try {
+                String jsonTrailerResponse = NetworkUtils.makeHttpRequest(trailerRequestUrl);
+
+                trailers = JSONUtils.extractTrailerDataFromJson(MainActivity.this, jsonTrailerResponse);
+
+                return trailers;
+            } catch (Exception e) {
+                Log.d(TAG, "doInBackground: !!!!" + trailers);
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Trailer> trailerData) {
+            tAdapter.clear();
+            if (trailerData != null) {
+                trailers = trailerData;
+                tAdapter.add(trailerData);
+            }
+            tAdapter.notifyDataSetChanged();
+            super.onPostExecute(trailers);
         }
     }
 

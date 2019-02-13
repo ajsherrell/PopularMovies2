@@ -53,7 +53,7 @@ public class JSONUtils {
                 JSONObject currentMovie = jsonResultsArray.getJSONObject(i);
 
                 // extract the value for the key called "id"
-                int id = currentMovie.getInt("id");
+                String id = currentMovie.getString("id");
 
                 // extract the value for the key called "original_title"
                 String originalTitle = currentMovie.getString("original_title");

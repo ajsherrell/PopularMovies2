@@ -46,7 +46,7 @@ public class MovieDetails extends AppCompatActivity {
     private ArrayList<Review> reviews = new ArrayList<>();
     private ArrayList<Trailer> trailers = new ArrayList<>();
 
-    private static RecyclerView trailerRecylerView;
+    private static RecyclerView trailerRecyclerView;
     private static RecyclerView reviewRecyclerView;
 
     private MovieDatabase mDb;
@@ -85,14 +85,14 @@ public class MovieDetails extends AppCompatActivity {
 
         // set if no UI change
         reviewRecyclerView.setHasFixedSize(true);
-        trailerRecylerView.setHasFixedSize(true);
+        trailerRecyclerView.setHasFixedSize(true);
 
         // adapter links data
         rAdapter = new ReviewAdapter(this, reviews);
         tAdapter = new TrailerAdapter(this, trailers);
 
         reviewRecyclerView.setAdapter(rAdapter);
-        trailerRecylerView.setAdapter(tAdapter);
+        trailerRecyclerView.setAdapter(tAdapter);
 
         //todo asynctask for both adapters
 
@@ -173,80 +173,6 @@ public class MovieDetails extends AppCompatActivity {
         }
     }
 
-    //review asynctask
-    public class FetchReviewTask extends AsyncTask<String, Void, ArrayList<Review>> {
 
-        @Override
-        protected ArrayList<Review> doInBackground(String... strings) {
-            if (strings.length == 0) {
-                return null;
-            }
-            String review = strings[0];
-            URL reviewRequestUrl = createReviewUrl(valueOf(review));
-
-            try {
-                String jsonReviewResponse = NetworkUtils.makeHttpRequest(reviewRequestUrl);
-
-                reviews = JSONUtils.extractReviewDataFromJson(MovieDetails.this, jsonReviewResponse);
-
-                return reviews;
-            } catch (Exception e) {
-                Log.d(TAG, "doInBackground: !!!!" + reviews);
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected onPostExecute(ArrayList<Review> reviewData) {
-            rAdapter.clear();
-            if (reviewData != null) {
-                reviews = reviewData;
-                rAdapter.add(reviewData);
-            } else {
-                Log.d(TAG, "onPostExecute: not working!!!!!" + reviewData);
-            }
-            rAdapter.notifyDataSetChanged();
-            super.onPostExecute(reviewData);
-        }
-    }
-
-    //trailer asynctask
-    public class FetchTrailerTask extends AsyncTask<String, Void, ArrayList<Trailer>> {
-
-        @Override
-        protected ArrayList<Trailer> doInBackground(String... strings) {
-            if (strings.length == 0) {
-                return null;
-            }
-            String review = strings[0];
-            URL trailerRequestUrl = createTrailerUrl(valueOf(review));
-
-            try {
-                String jsonTrailerResponse = NetworkUtils.makeHttpRequest(trailerRequestUrl);
-
-                trailers = JSONUtils.extractTrailerDataFromJson(MovieDetails.this, jsonTrailerResponse);
-
-                return trailers;
-            } catch (Exception e) {
-                Log.d(TAG, "doInBackground: !!!!" + trailers);
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected onPostExecute(ArrayList<Trailer> trailerData) {
-            rAdapter.clear();
-            if (trailerData != null) {
-                trailers = trailerData;
-                rAdapter.add(trailerData);
-            } else {
-                Log.d(TAG, "onPostExecute: not working!!!!!" + trailerData);
-            }
-            tAdapter.notifyDataSetChanged();
-            super.onPostExecute(trailerData);
-        }
-    }
 
 }

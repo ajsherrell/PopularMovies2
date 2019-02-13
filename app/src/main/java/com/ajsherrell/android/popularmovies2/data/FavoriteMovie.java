@@ -7,14 +7,14 @@ import android.arch.persistence.room.PrimaryKey;
 public class FavoriteMovie {
 
     @PrimaryKey
-    private int mId;
+    private String mId;
     private String mOriginalTitle;
     private String mPosterThumbnail;
     private String mPlotOverview;
     private String mUserRating;
     private String mReleaseDate;
 
-    public FavoriteMovie(int id, String originalTitle, String posterThumbnail,
+    public FavoriteMovie(String id, String originalTitle, String posterThumbnail,
                          String plotOverview, String userRating, String releaseDate) {
         this.mId = id;
         this.mOriginalTitle = originalTitle;
@@ -24,11 +24,11 @@ public class FavoriteMovie {
         this.mReleaseDate = releaseDate;
     }
 
-    public int getId() {
+    public String getId() {
         return mId;
     }
 
-    public void setId(int Id) {
+    public void setId(String Id) {
         this.mId = Id;
     }
 
