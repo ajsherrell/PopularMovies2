@@ -2,8 +2,7 @@ package com.ajsherrell.android.popularmovies2;
 
 import android.arch.lifecycle.LiveData;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,19 +17,14 @@ import com.ajsherrell.android.popularmovies2.adapters.ReviewAdapter;
 import com.ajsherrell.android.popularmovies2.adapters.TrailerAdapter;
 import com.ajsherrell.android.popularmovies2.data.FavoriteMovie;
 import com.ajsherrell.android.popularmovies2.data.MovieDatabase;
-import com.ajsherrell.android.popularmovies2.databinding.ActivityMovieDetailsBinding;
 import com.ajsherrell.android.popularmovies2.model.Movie;
 import com.ajsherrell.android.popularmovies2.model.Review;
 import com.ajsherrell.android.popularmovies2.model.Trailer;
 import com.ajsherrell.android.popularmovies2.utilities.AppExecutor;
-import com.ajsherrell.android.popularmovies2.utilities.JSONUtils;
-import com.ajsherrell.android.popularmovies2.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
-import java.net.URL;
 import java.util.ArrayList;
 
-import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createReviewUrl;
 import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createTrailerUrl;
 
 import static com.ajsherrell.android.popularmovies2.R.layout.activity_movie_details;
@@ -38,13 +32,12 @@ import static java.lang.String.valueOf;
 
 public class MovieDetails extends AppCompatActivity {
 
-    ActivityMovieDetailsBinding mBinding;
 
     private static final String TAG = MovieDetails.class.getSimpleName();
 
     private Movie moviePage;
-    private ArrayList<Review> reviews = new ArrayList<>();
-    private ArrayList<Trailer> trailers = new ArrayList<>();
+    private ArrayList<Review> reviews;
+    private ArrayList<Trailer> trailers;
 
     private static RecyclerView trailerRecyclerView;
     private static RecyclerView reviewRecyclerView;
@@ -76,12 +69,24 @@ public class MovieDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(activity_movie_details);
 
+        // finders
+        reviewRecyclerView.findViewById(R.id.reviewRecyclerView);
+        trailerRecyclerView.findViewById(R.id.trailerRecyclerView);
+        star.findViewById(R.id.star);
+        originalTitle.findViewById(R.id.original_title);
+        moviePoster.findViewById(R.id.movie_poster_image_thumbnail);
+        plotOverview.findViewById(R.id.plot_overview);
+        userRating.findViewById(R.id.user_rating);
+        releaseDate.findViewById(R.id.release_date);
+        author.findViewById(R.id.author);
+        content.findViewById(R.id.content);
+        trailer.findViewById(R.id.trailerListView);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_movie_details);
 
-        mBinding.reviewRecyclerView.setLayoutManager(layoutManager);
-        mBinding.trailerRecyclerView.setLayoutManager(layoutManager);
+        reviewRecyclerView.setLayoutManager(layoutManager);
+        trailerRecyclerView.setLayoutManager(layoutManager);
 
         // set if no UI change
         reviewRecyclerView.setHasFixedSize(true);
@@ -120,43 +125,40 @@ public class MovieDetails extends AppCompatActivity {
     private void setFavorite(Boolean favorite) {
         if (favorite) {
             isFavortie = true;
-            mBinding.star.setImageResource(R.drawable.ic_star);
+            star.setImageResource(R.drawable.ic_star);
         } else {
             isFavortie = false;
-            mBinding.star.setImageResource(R.drawable.ic_star_border);
+            star.setImageResource(R.drawable.ic_star_border);
         }
     }
 
     public void populateUI() {
         if (moviePage != null && reviews != null && trailers != null) {
             if (originalTitle != null) {
-                mBinding.originalTitle.setText(moviePage.getOriginalTitle());
+                originalTitle.setText(moviePage.getOriginalTitle());
             }
 
             if (plotOverview != null) {
-                mBinding.plotOverview.setText(moviePage.getPlotOverview());
+                plotOverview.setText(moviePage.getPlotOverview());
             }
 
             if (userRating != null) {
-                mBinding.userRating.setText(moviePage.getUserRating());
+                userRating.setText(moviePage.getUserRating());
             }
 
             if (releaseDate != null) {
-                mBinding.releaseDate.setText(moviePage.getReleaseDate());
+                releaseDate.setText(moviePage.getReleaseDate());
             }
 
             if (author != null) {
-                author.findViewById(R.id.author);
                 reviewRecyclerView.setAdapter(rAdapter);
             }
 
             if (content != null) {
-                content.findViewById(R.id.content);
                 reviewRecyclerView.setAdapter(rAdapter);
             }
 
             if (trailer != null) {
-                trailer.findViewById(R.id.trailerListView);
                 trailer.setAdapter((ListAdapter) tAdapter);
             }
         }
@@ -173,6 +175,17 @@ public class MovieDetails extends AppCompatActivity {
         }
     }
 
+    // on clicked trailer, send to youtube
+    public void openTrailer(String movieId) {
+        String urlAsString = String.valueOf(createTrailerUrl(movieId));
+        openYouTube(urlAsString);
+    }
 
-
+    private void openYouTube(String url) {
+        Uri webPage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webPage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
 }

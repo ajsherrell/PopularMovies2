@@ -2,11 +2,13 @@ package com.ajsherrell.android.popularmovies2.data;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 @Entity(tableName = "movies")
 public class FavoriteMovie {
 
     @PrimaryKey
+    @NonNull
     private String mId;
     private String mOriginalTitle;
     private String mPosterThumbnail;

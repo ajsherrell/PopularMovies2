@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.ajsherrell.android.popularmovies2.Constants;
 
-@Database(entities = {FavoriteMovie.class}, version = 3, exportSchema = false)
+@Database(entities = {FavoriteMovie.class}, version = 4, exportSchema = false)
 public abstract class MovieDatabase extends RoomDatabase {
     private static final String TAG = MovieDatabase.class.getSimpleName();
     private static final String DATABASE_NAME = "favoriteslist";

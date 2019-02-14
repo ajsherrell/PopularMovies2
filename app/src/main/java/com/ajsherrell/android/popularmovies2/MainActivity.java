@@ -36,6 +36,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ajsherrell.android.popularmovies2.Constants.MOVIE_ID;
 import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createMovieUrl;
 import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createReviewUrl;
 import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createTrailerUrl;
@@ -55,8 +56,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private MovieDatabase mDb;
 
-    private ArrayList<Review> reviews = new ArrayList<>();
-    private ArrayList<Trailer> trailers = new ArrayList<>();
+    private ArrayList<Review> reviewData = new ArrayList<>();
+    private ArrayList<Trailer> trailerData = new ArrayList<>();
 
     private ReviewAdapter rAdapter;
     private TrailerAdapter tAdapter;
@@ -85,8 +86,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView.setAdapter(mMovieAdapter);
 
         loadMovieData(Constants.SORT_BY_POPULAR);
-        loadReviewData(String.valueOf(Constants.MOVIE_ID));
-        loadTrailerData(String.valueOf(Constants.MOVIE_ID));
+        loadReviewData(MOVIE_ID);
+        loadTrailerData(MOVIE_ID);
 
 
         mDb = MovieDatabase.getInstance(getApplicationContext());
@@ -104,8 +105,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                     favoriteData = favoriteMovies;
                 }
                 loadMovieData(Constants.SORT_BY_FAVORITE);
-                loadReviewData(String.valueOf(Constants.MOVIE_ID));
-                loadTrailerData(String.valueOf(Constants.MOVIE_ID));
+                loadReviewData(MOVIE_ID);
+                loadTrailerData(MOVIE_ID);
             }
         });
     }
@@ -205,25 +206,25 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             try {
                 String jsonReviewResponse = NetworkUtils.makeHttpRequest(reviewRequestUrl);
 
-                reviews = JSONUtils.extractReviewDataFromJson(MainActivity.this, jsonReviewResponse);
+                reviewData = JSONUtils.extractReviewDataFromJson(MainActivity.this, jsonReviewResponse);
 
-                return reviews;
+                return reviewData;
             } catch (Exception e) {
-                Log.d(TAG, "doInBackground: !!!!" + reviews);
+                Log.d(TAG, "doInBackground: !!!!" + reviewData);
                 e.printStackTrace();
                 return null;
             }
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Review> reviewData) {
+        protected void onPostExecute(ArrayList<Review> review) {
             rAdapter.clear();
-            if (reviewData != null) {
-                reviews = reviewData;
-                rAdapter.add(reviewData);
+            if (review != null) {
+                reviewData = review;
+                rAdapter.add(review);
             }
             rAdapter.notifyDataSetChanged();
-            super.onPostExecute(reviews);
+            super.onPostExecute(review);
         }
     }
 
@@ -241,25 +242,25 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             try {
                 String jsonTrailerResponse = NetworkUtils.makeHttpRequest(trailerRequestUrl);
 
-                trailers = JSONUtils.extractTrailerDataFromJson(MainActivity.this, jsonTrailerResponse);
+                trailerData = JSONUtils.extractTrailerDataFromJson(MainActivity.this, jsonTrailerResponse);
 
-                return trailers;
+                return trailerData;
             } catch (Exception e) {
-                Log.d(TAG, "doInBackground: !!!!" + trailers);
+                Log.d(TAG, "doInBackground: !!!!" + trailerData);
                 e.printStackTrace();
                 return null;
             }
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Trailer> trailerData) {
+        protected void onPostExecute(ArrayList<Trailer> trailer) {
             tAdapter.clear();
-            if (trailerData != null) {
-                trailers = trailerData;
-                tAdapter.add(trailerData);
+            if (trailer != null) {
+                trailerData = trailer;
+                tAdapter.add(trailer);
             }
             tAdapter.notifyDataSetChanged();
-            super.onPostExecute(trailers);
+            super.onPostExecute(trailer);
         }
     }
 
