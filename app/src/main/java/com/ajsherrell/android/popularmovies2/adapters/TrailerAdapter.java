@@ -7,9 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
-import com.ajsherrell.android.popularmovies2.MainActivity;
 import com.ajsherrell.android.popularmovies2.MovieDetails;
 import com.ajsherrell.android.popularmovies2.R;
 import com.ajsherrell.android.popularmovies2.model.Trailer;
@@ -26,7 +26,6 @@ public class TrailerAdapter extends RecyclerView.Adapter
     public static List<Trailer> trailerList;
     private Context mContext;
     private OnClickListener mOnClickListener;
-
 
     // interface for clicklistener
     public interface OnClickListener {
@@ -56,7 +55,7 @@ public class TrailerAdapter extends RecyclerView.Adapter
     @Override
     public void onBindViewHolder(@NonNull TrailerAdapter.ViewHolder viewHolder, int i) {
         Trailer trailer = trailerList.get(i);
-        viewHolder.trailerListView.setText(trailer.getName());
+        viewHolder.trailerButton.setText(trailer.getName());
     }
 
     @Override
@@ -65,24 +64,24 @@ public class TrailerAdapter extends RecyclerView.Adapter
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements OnClickListener, View.OnClickListener {
-        public TextView trailerListView;
+        public Button trailerButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            trailerListView.findViewById(R.id.trailerListView);
+            trailerButton = itemView.findViewById(R.id.trailerButton);
             itemView.setOnClickListener(this);
         }
 
         @Override
-        public void onClick(Trailer clickedTrailer) {
+        public void onClick(View view) {
 
         }
 
         @Override
-        public void onClick(View v) {
+        public void onClick(Trailer clickedTrailer) {
             int adapterPosition = getAdapterPosition();
             mOnClickListener.onClick(trailerList.get(adapterPosition));
-            Log.d(TAG, "onClick: !!!!" + v);
+            Log.d(TAG, "onClick: !!!!" + clickedTrailer);
         }
     }
 

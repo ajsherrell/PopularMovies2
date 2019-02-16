@@ -175,9 +175,10 @@ public class JSONUtils {
                 String key = currentTrailer.getString("key");
                 // extract the value for the key called "content"
                 String site = currentTrailer.getString("site");
-                // todo: make sure I don't need to do something with "url"
+                // extract the value for the key called "url"
+                String url = currentTrailer.getString("url");
                 //create a new {@link Review} object with the JSON response
-                Trailer trailerList = new Trailer(name, key, site);
+                Trailer trailerList = new Trailer(name, key, site, url);
 
                 data.add(trailerList);
 

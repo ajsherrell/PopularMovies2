@@ -13,8 +13,6 @@ import android.widget.ImageView;
 import com.ajsherrell.android.popularmovies2.Constants;
 import com.ajsherrell.android.popularmovies2.R;
 import com.ajsherrell.android.popularmovies2.model.Movie;
-import com.ajsherrell.android.popularmovies2.model.Review;
-import com.ajsherrell.android.popularmovies2.model.Trailer;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -29,7 +27,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     // interface for on click messages
     public interface MovieAdapterOnClickHandler {
-        void onClick(Movie clickedMovie, Review review, Trailer trailer);
+        void onClick(Movie clickedMovie);
 
     }
 
@@ -51,7 +49,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            mClickHandler.onClick(movieList.get(adapterPosition), ReviewAdapter.reviewList.get(adapterPosition), TrailerAdapter.trailerList.get(adapterPosition));
+            mClickHandler.onClick(movieList.get(adapterPosition));
             Log.d(TAG, "onClick: was clicked!!!");
         }
     }

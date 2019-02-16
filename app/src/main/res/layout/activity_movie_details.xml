@@ -127,47 +127,20 @@
                 app:srcCompat="@drawable/ic_star_border" />
 
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/reviewRecyclerView"
-                android:layout_width="395dp"
-                android:layout_height="105dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <TextView android:id="@+id/author"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <TextView android:id="@+id/content"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-            </android.support.v7.widget.RecyclerView>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/trailerRecyclerView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <Button android:id="@+id/trailerListView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/trailers"
+                <Button
+                    android:id="@+id/trailerButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="46dp"
                     android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
                     android:onClick="openTrailer"
-                    android:textColor="@color/colorPrimaryLight"/>
+                    android:text="@string/trailers"
+                    android:textColor="@color/colorPrimaryLight"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/star" />
 
-            </android.support.v7.widget.RecyclerView>
 
 
 

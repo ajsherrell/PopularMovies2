@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -23,13 +22,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ajsherrell.android.popularmovies2.adapters.MovieAdapter;
-import com.ajsherrell.android.popularmovies2.adapters.ReviewAdapter;
-import com.ajsherrell.android.popularmovies2.adapters.TrailerAdapter;
 import com.ajsherrell.android.popularmovies2.data.FavoriteMovie;
 import com.ajsherrell.android.popularmovies2.data.MovieDatabase;
 import com.ajsherrell.android.popularmovies2.model.Movie;
-import com.ajsherrell.android.popularmovies2.model.Review;
-import com.ajsherrell.android.popularmovies2.model.Trailer;
 import com.ajsherrell.android.popularmovies2.utilities.JSONUtils;
 import com.ajsherrell.android.popularmovies2.utilities.NetworkUtils;
 
@@ -39,8 +34,6 @@ import java.util.List;
 
 import static com.ajsherrell.android.popularmovies2.Constants.MOVIE_ID;
 import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createMovieUrl;
-import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createReviewUrl;
-import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createTrailerUrl;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
@@ -51,21 +44,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private ArrayList<Movie> data = new ArrayList<>();
     private List<FavoriteMovie> favoriteData = new ArrayList<>();
 
-    private static RecyclerView reviewRecyclerView;
-    private static RecyclerView trailerRecyclerView;
+
     private static RecyclerView mRecyclerView;
     private static TextView mErrorMessageDisplay;
     private static ProgressBar mProgressBar;
 
     private MovieDatabase mDb;
 
-    private TrailerAdapter.OnClickListener mTrailerOnClickListener;
-
-    private static ArrayList<Review> reviewData = new ArrayList<>();
-    private static ArrayList<Trailer> trailerData = new ArrayList<>();
-
-    private static ReviewAdapter rAdapter;
-    private static TrailerAdapter tAdapter;
     private static MovieAdapter mMovieAdapter;
 
     @Override
@@ -74,8 +59,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         setContentView(R.layout.activity_main);
 
         // finders
-        reviewRecyclerView = findViewById(R.id.reviewRecyclerView);
-        trailerRecyclerView = findViewById(R.id.trailerRecyclerView);
         mRecyclerView = findViewById(R.id.recyclerview_movies);
         mErrorMessageDisplay = findViewById(R.id.tv_error_message_display);
         mProgressBar = findViewById(R.id.pb_loading_indicator);
@@ -83,36 +66,20 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         // movie grid
         GridLayoutManager layoutManager = new GridLayoutManager(this, numColumns());
 
-        // review & trailer layout
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(movieDetails);
-
         mRecyclerView.setLayoutManager(layoutManager);
-        reviewRecyclerView.setLayoutManager(linearLayoutManager);
-        trailerRecyclerView.setLayoutManager(linearLayoutManager);
-
 
         // set if no UI change
         mRecyclerView.setHasFixedSize(true);
-        reviewRecyclerView.setHasFixedSize(true);
-        trailerRecyclerView.setHasFixedSize(true);
+
 
 
         // adapter links movie data
         mMovieAdapter = new MovieAdapter(this, data, this);
-        rAdapter = new ReviewAdapter(movieDetails, reviewData);
-        tAdapter = new TrailerAdapter(movieDetails, trailerData, mTrailerOnClickListener);
-
 
         // attach adapter to recyclerView
         mRecyclerView.setAdapter(mMovieAdapter);
-        reviewRecyclerView.setAdapter(rAdapter);
-        trailerRecyclerView.setAdapter(tAdapter);
 
         loadMovieData(Constants.SORT_BY_POPULAR);
-        loadReviewData(MOVIE_ID);
-        loadTrailerData(MOVIE_ID);
-
-
 
         mDb = MovieDatabase.getInstance(getApplicationContext());
         setupViewModel();
@@ -129,20 +96,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                     favoriteData = favoriteMovies;
                 }
                 loadMovieData(Constants.SORT_BY_FAVORITE);
-                loadReviewData(MOVIE_ID);
-                loadTrailerData(MOVIE_ID);
             }
         });
-    }
-
-    public void loadReviewData(String movieId) {
-        FetchReviewTask reviewTask = new FetchReviewTask();
-        reviewTask.execute(movieId);
-    }
-
-    public void loadTrailerData(String movieId) {
-        FetchTrailerTask trailerTask = new FetchTrailerTask();
-        trailerTask.execute(movieId);
     }
 
     private void loadMovieData(String sortBy) {
@@ -162,11 +117,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     @Override
-    public void onClick(Movie clickedMovie, Review review, Trailer trailer) {
+    public void onClick(Movie clickedMovie) {
         Intent intent = new Intent(this, MovieDetails.class);
         intent.putExtra("Movie", clickedMovie);
-        intent.putExtra("Review", review);
-        intent.putExtra("Trailer", trailer);
         startActivity(intent);
     }
 
@@ -215,80 +168,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             mMovieAdapter.notifyDataSetChanged();
             super.onPostExecute(movieData);
             Log.d(TAG, "onPostExecute: something is wrong!!!!!" + movieData);
-        }
-    }
-
-    //review asynctask
-    public class FetchReviewTask extends AsyncTask<String, Void, ArrayList<Review>> {
-
-        @Override
-        protected ArrayList<Review> doInBackground(String... strings) {
-            if (strings.length == 0) {
-                return null;
-            }
-            String review = strings[0];
-            URL reviewRequestUrl = createReviewUrl(review);
-
-            try {
-                String jsonReviewResponse = NetworkUtils.makeHttpRequest(reviewRequestUrl);
-
-                reviewData = JSONUtils.extractReviewDataFromJson(MainActivity.this, jsonReviewResponse);
-
-                return reviewData;
-            } catch (Exception e) {
-                Log.d(TAG, "doInBackground: !!!!" + reviewData);
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Review> review) {
-            rAdapter.clear();
-            if (review != null) {
-                reviewData = review;
-                rAdapter.add(review);
-            }
-            rAdapter.notifyDataSetChanged();
-            super.onPostExecute(review);
-            Log.d(TAG, "onPostExecute: !!!!" + review);
-        }
-    }
-
-    //trailer asynctask
-    public class FetchTrailerTask extends AsyncTask<String, Void, ArrayList<Trailer>> {
-
-        @Override
-        protected ArrayList<Trailer> doInBackground(String... strings) {
-            if (strings.length == 0) {
-                return null;
-            }
-            String trailer = strings[0];
-            URL trailerRequestUrl = createTrailerUrl(trailer);
-
-            try {
-                String jsonTrailerResponse = NetworkUtils.makeHttpRequest(trailerRequestUrl);
-
-                trailerData = JSONUtils.extractTrailerDataFromJson(MainActivity.this, jsonTrailerResponse);
-
-                return trailerData;
-            } catch (Exception e) {
-                Log.d(TAG, "doInBackground: !!!!" + trailerData);
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Trailer> trailer) {
-            tAdapter.clear();
-            if (trailer != null) {
-                trailerData = trailer;
-                tAdapter.add(trailer);
-            }
-            tAdapter.notifyDataSetChanged();
-            super.onPostExecute(trailer);
-            Log.d(TAG, "onPostExecute: !!!" + trailer);
         }
     }
 

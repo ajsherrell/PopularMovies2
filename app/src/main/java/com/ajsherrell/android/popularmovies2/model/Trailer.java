@@ -10,11 +10,11 @@ public class Trailer implements Parcelable {
     private String mSite;
     private String mUrl;
 
-    public Trailer(String name, String key, String site) {
+    public Trailer(String name, String key, String site, String url) {
         this.mName = name;
         this.mKey = key;
         this.mSite = site;
-        this.mUrl = "https://www.youtube.com/watchv=" + key; // todo: make url instead?
+        this.mUrl = url;
     }
 
     protected Trailer(Parcel in) {
