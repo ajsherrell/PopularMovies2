@@ -56,11 +56,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private MovieDatabase mDb;
 
-    private ArrayList<Review> reviewData = new ArrayList<>();
-    private ArrayList<Trailer> trailerData = new ArrayList<>();
+    private static ArrayList<Review> reviewData = new ArrayList<>();
+    private static ArrayList<Trailer> trailerData = new ArrayList<>();
 
-    private ReviewAdapter rAdapter;
-    private TrailerAdapter tAdapter;
+    private static ReviewAdapter rAdapter;
+    private static TrailerAdapter tAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         loadTrailerData(MOVIE_ID);
 
 
+
         mDb = MovieDatabase.getInstance(getApplicationContext());
         setupViewModel();
     }
@@ -111,18 +112,18 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         });
     }
 
-    private void loadReviewData(String movieId) {
+    public void loadReviewData(String movieId) {
         FetchReviewTask reviewTask = new FetchReviewTask();
         reviewTask.execute(movieId);
     }
 
-    private void loadTrailerData(String movieId) {
+    public void loadTrailerData(String movieId) {
         FetchTrailerTask trailerTask = new FetchTrailerTask();
         trailerTask.execute(movieId);
     }
 
     private void loadMovieData(String sortBy) {
-        FetchMovieTask task = (FetchMovieTask) new FetchMovieTask();
+        FetchMovieTask task = new FetchMovieTask();
         task.execute(sortBy);
         showMoviePosterData();
     }
@@ -159,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 return null;
             }
             String movie = strings[0];
-            URL movieRequestUrl = createMovieUrl(valueOf(movie));
+            URL movieRequestUrl = createMovieUrl(movie);
 
             try {
                 String jsonMovieResponse = NetworkUtils.makeHttpRequest(movieRequestUrl);
@@ -168,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
                 return data;
             } catch (Exception e) {
-                Log.d(TAG, "doInBackground: is not working right");
+                Log.d(TAG, "doInBackground: is not working right" + movie);
                 e.printStackTrace();
                 return null;
             }
@@ -201,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 return null;
             }
             String review = strings[0];
-            URL reviewRequestUrl = createReviewUrl(valueOf(review));
+            URL reviewRequestUrl = createReviewUrl(review);
 
             try {
                 String jsonReviewResponse = NetworkUtils.makeHttpRequest(reviewRequestUrl);
@@ -225,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             }
             rAdapter.notifyDataSetChanged();
             super.onPostExecute(review);
+            Log.d(TAG, "onPostExecute: !!!!" + review);
         }
     }
 
@@ -237,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 return null;
             }
             String trailer = strings[0];
-            URL trailerRequestUrl = createTrailerUrl(valueOf(trailer));
+            URL trailerRequestUrl = createTrailerUrl(trailer);
 
             try {
                 String jsonTrailerResponse = NetworkUtils.makeHttpRequest(trailerRequestUrl);
@@ -261,6 +263,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             }
             tAdapter.notifyDataSetChanged();
             super.onPostExecute(trailer);
+            Log.d(TAG, "onPostExecute: !!!" + trailer);
         }
     }
 

@@ -24,7 +24,9 @@ import com.ajsherrell.android.popularmovies2.utilities.AppExecutor;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import static com.ajsherrell.android.popularmovies2.Constants.MOVIE_ID;
 import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createTrailerUrl;
 
 import static com.ajsherrell.android.popularmovies2.R.layout.activity_movie_details;
@@ -36,8 +38,10 @@ public class MovieDetails extends AppCompatActivity {
     private static final String TAG = MovieDetails.class.getSimpleName();
 
     private Movie moviePage;
-    private ArrayList<Review> reviews;
-    private ArrayList<Trailer> trailers;
+    private List<Review> reviews;
+    private List<Trailer> trailers;
+
+    private TrailerAdapter.OnClickListener mTrailerOnClickListener;
 
     private static RecyclerView trailerRecyclerView;
     private static RecyclerView reviewRecyclerView;
@@ -94,12 +98,10 @@ public class MovieDetails extends AppCompatActivity {
 
         // adapter links data
         rAdapter = new ReviewAdapter(this, reviews);
-        tAdapter = new TrailerAdapter(this, trailers);
+        tAdapter = new TrailerAdapter(this, (ArrayList<Trailer>) trailers, mTrailerOnClickListener);
 
         reviewRecyclerView.setAdapter(rAdapter);
         trailerRecyclerView.setAdapter(tAdapter);
-
-        //todo asynctask for both adapters
 
         Intent intent = getIntent();
         if (intent != null) {

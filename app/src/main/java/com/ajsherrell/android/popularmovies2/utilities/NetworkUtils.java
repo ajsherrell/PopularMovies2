@@ -16,6 +16,9 @@ public class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
+    // private constructor
+    private NetworkUtils() {}
+
     //create the Movie url
     public static URL createMovieUrl(String sortBy) {
         // build the URI
@@ -85,11 +88,12 @@ public class NetworkUtils {
             scanner.useDelimiter("\\A");
 
             boolean hasInput = scanner.hasNext();
+            String response = null;
             if (hasInput) {
-                return scanner.next();
-            } else {
-                return null;
+                response = scanner.next();
             }
+            scanner.close();
+            return response;
         } finally {
             urlConnection.disconnect();
         }

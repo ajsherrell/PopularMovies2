@@ -117,7 +117,7 @@ public class JSONUtils {
                 JSONObject currentReview = jsonResultsArray.getJSONObject(i);
 
                 // extract the value for the key called "id"
-                int id = currentReview.getInt("id");
+                String id = currentReview.getString("id");
                 // extract the value for the key called "author"
                 String author = currentReview.getString("author");
                 // extract the value for the key called "content"
@@ -132,13 +132,13 @@ public class JSONUtils {
 
                 // add the new {@link Review} to the list of reviews
                 reviews[i] = String.valueOf(new ArrayList<Review>());
-                Log.d(TAG, "extractReviewDataFromJson: " + reviewList);
+                Log.d(TAG, "extractReviewDataFromJson: !!!" + reviewList);
             }
         } catch (JSONException e) {
             e.printStackTrace();
             Log.d(TAG, "extractReviewDataFromJson: problem parsing JSON reviews!!!!", e);
         }
-        // return list of movie data
+        // return list of review data
         return data;
     }
 
@@ -189,7 +189,7 @@ public class JSONUtils {
             e.printStackTrace();
             Log.d(TAG, "extractTrailerDataFromJson: problem parsing JSON reviews!!!!", e);
         }
-        // return list of movie data
+        // return list of trailer data
         return data;
     }
 
