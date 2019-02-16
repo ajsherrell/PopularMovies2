@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -40,27 +41,32 @@ import static com.ajsherrell.android.popularmovies2.Constants.MOVIE_ID;
 import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createMovieUrl;
 import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createReviewUrl;
 import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createTrailerUrl;
-import static java.lang.String.valueOf;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    MovieDetails movieDetails;
+
     private ArrayList<Movie> data = new ArrayList<>();
     private List<FavoriteMovie> favoriteData = new ArrayList<>();
 
+    private static RecyclerView reviewRecyclerView;
+    private static RecyclerView trailerRecyclerView;
     private static RecyclerView mRecyclerView;
-    private static MovieAdapter mMovieAdapter;
     private static TextView mErrorMessageDisplay;
     private static ProgressBar mProgressBar;
 
     private MovieDatabase mDb;
+
+    private TrailerAdapter.OnClickListener mTrailerOnClickListener;
 
     private static ArrayList<Review> reviewData = new ArrayList<>();
     private static ArrayList<Trailer> trailerData = new ArrayList<>();
 
     private static ReviewAdapter rAdapter;
     private static TrailerAdapter tAdapter;
+    private static MovieAdapter mMovieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,22 +74,39 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         setContentView(R.layout.activity_main);
 
         // finders
-        mRecyclerView = (RecyclerView)findViewById(R.id.recyclerview_movies);
-        mErrorMessageDisplay = (TextView)findViewById(R.id.tv_error_message_display);
-        mProgressBar = (ProgressBar)findViewById(R.id.pb_loading_indicator);
+        reviewRecyclerView = findViewById(R.id.reviewRecyclerView);
+        trailerRecyclerView = findViewById(R.id.trailerRecyclerView);
+        mRecyclerView = findViewById(R.id.recyclerview_movies);
+        mErrorMessageDisplay = findViewById(R.id.tv_error_message_display);
+        mProgressBar = findViewById(R.id.pb_loading_indicator);
 
+        // movie grid
         GridLayoutManager layoutManager = new GridLayoutManager(this, numColumns());
 
+        // review & trailer layout
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(movieDetails);
+
         mRecyclerView.setLayoutManager(layoutManager);
+        reviewRecyclerView.setLayoutManager(linearLayoutManager);
+        trailerRecyclerView.setLayoutManager(linearLayoutManager);
+
 
         // set if no UI change
         mRecyclerView.setHasFixedSize(true);
+        reviewRecyclerView.setHasFixedSize(true);
+        trailerRecyclerView.setHasFixedSize(true);
+
 
         // adapter links movie data
         mMovieAdapter = new MovieAdapter(this, data, this);
+        rAdapter = new ReviewAdapter(movieDetails, reviewData);
+        tAdapter = new TrailerAdapter(movieDetails, trailerData, mTrailerOnClickListener);
+
 
         // attach adapter to recyclerView
         mRecyclerView.setAdapter(mMovieAdapter);
+        reviewRecyclerView.setAdapter(rAdapter);
+        trailerRecyclerView.setAdapter(tAdapter);
 
         loadMovieData(Constants.SORT_BY_POPULAR);
         loadReviewData(MOVIE_ID);
@@ -139,9 +162,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     @Override
-    public void onClick(Movie clickedMovie) {
+    public void onClick(Movie clickedMovie, Review review, Trailer trailer) {
         Intent intent = new Intent(this, MovieDetails.class);
         intent.putExtra("Movie", clickedMovie);
+        intent.putExtra("Review", review);
+        intent.putExtra("Trailer", trailer);
         startActivity(intent);
     }
 

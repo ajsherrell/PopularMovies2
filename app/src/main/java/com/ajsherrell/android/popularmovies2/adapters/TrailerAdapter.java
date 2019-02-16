@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ajsherrell.android.popularmovies2.MainActivity;
 import com.ajsherrell.android.popularmovies2.MovieDetails;
 import com.ajsherrell.android.popularmovies2.R;
 import com.ajsherrell.android.popularmovies2.model.Trailer;
@@ -22,8 +23,8 @@ public class TrailerAdapter extends RecyclerView.Adapter
 
     private static final String TAG = TrailerAdapter.class.getSimpleName();
 
-    private List<Trailer> trailerList;
-    private MovieDetails MovieDetails;
+    public static List<Trailer> trailerList;
+    private Context mContext;
     private OnClickListener mOnClickListener;
 
 
@@ -32,8 +33,8 @@ public class TrailerAdapter extends RecyclerView.Adapter
         void onClick(Trailer clickedTrailer);
     }
 
-    public TrailerAdapter(MovieDetails MovieDetails, ArrayList<Trailer> trailers, OnClickListener onClickListener) {
-        this.MovieDetails = MovieDetails;
+    public TrailerAdapter(Context context, ArrayList<Trailer> trailers, OnClickListener onClickListener) {
+        this.mContext = context;
         this.trailerList = trailers;
         this.mOnClickListener = onClickListener;
 
@@ -44,7 +45,7 @@ public class TrailerAdapter extends RecyclerView.Adapter
     @Override
     public TrailerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         Context context = viewGroup.getContext();
-        int layoutForListItem = R.layout.trailer;
+        int layoutForListItem = R.layout.activity_movie_details;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 

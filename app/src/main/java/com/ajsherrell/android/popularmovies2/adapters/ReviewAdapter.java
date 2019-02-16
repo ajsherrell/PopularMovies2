@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ajsherrell.android.popularmovies2.MainActivity;
 import com.ajsherrell.android.popularmovies2.MovieDetails;
 import com.ajsherrell.android.popularmovies2.R;
 import com.ajsherrell.android.popularmovies2.model.Review;
@@ -20,12 +21,12 @@ public class ReviewAdapter extends RecyclerView.Adapter <ReviewAdapter.ViewHolde
 
     private static final String TAG = ReviewAdapter.class.getSimpleName();
 
-    private List<Review> reviewList;
-    private MovieDetails MovieDetails;
+    public static List<Review> reviewList;
+    private Context mContext;
 
-    public ReviewAdapter(MovieDetails MovieDetails, List<Review> reviews) {
-        this.MovieDetails = MovieDetails;
-        this.reviewList = reviews;
+    public ReviewAdapter(Context context, List<Review> reviews) {
+        this.mContext = context;
+        reviewList = reviews;
 
         Log.d(TAG, "ReviewAdapter: !!!" + Integer.toString(reviews.size()));
     }
@@ -34,7 +35,7 @@ public class ReviewAdapter extends RecyclerView.Adapter <ReviewAdapter.ViewHolde
     @Override
     public ReviewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         Context context = viewGroup.getContext();
-        int layoutForListItem = R.layout.review;
+        int layoutForListItem = R.layout.activity_movie_details;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 

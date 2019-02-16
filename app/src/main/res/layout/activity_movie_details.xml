@@ -140,10 +140,13 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <include android:id="@+id/review_layout"
-                    layout="@layout/review"
+                <TextView android:id="@+id/author"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="match_parent" />
+
+                <TextView android:id="@+id/content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
             </android.support.v7.widget.RecyclerView>
 
@@ -156,9 +159,10 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <ListView android:id="@+id/trailerListView"
+                <Button android:id="@+id/trailerListView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:text="@string/trailers"
                     android:layout_gravity="center"
                     android:onClick="openTrailer"
                     android:textColor="@color/colorPrimaryLight"/>

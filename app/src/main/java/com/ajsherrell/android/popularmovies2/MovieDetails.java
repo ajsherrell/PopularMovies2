@@ -3,13 +3,13 @@ package com.ajsherrell.android.popularmovies2;
 import android.arch.lifecycle.LiveData;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,10 +23,7 @@ import com.ajsherrell.android.popularmovies2.model.Trailer;
 import com.ajsherrell.android.popularmovies2.utilities.AppExecutor;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import static com.ajsherrell.android.popularmovies2.Constants.MOVIE_ID;
 import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createTrailerUrl;
 
 import static com.ajsherrell.android.popularmovies2.R.layout.activity_movie_details;
@@ -38,13 +35,9 @@ public class MovieDetails extends AppCompatActivity {
     private static final String TAG = MovieDetails.class.getSimpleName();
 
     private Movie moviePage;
-    private List<Review> reviews;
-    private List<Trailer> trailers;
+    private Review reviewPage;
+    private Trailer trailerPage;
 
-    private TrailerAdapter.OnClickListener mTrailerOnClickListener;
-
-    private static RecyclerView trailerRecyclerView;
-    private static RecyclerView reviewRecyclerView;
 
     private MovieDatabase mDb;
     private ImageView star;
@@ -64,7 +57,7 @@ public class MovieDetails extends AppCompatActivity {
     private ReviewAdapter rAdapter;
 
     // trailers
-    private ListView trailer;
+    private Button trailer;
     private TrailerAdapter tAdapter;
 
 
@@ -74,40 +67,21 @@ public class MovieDetails extends AppCompatActivity {
         setContentView(activity_movie_details);
 
         // finders
-        reviewRecyclerView.findViewById(R.id.reviewRecyclerView);
-        trailerRecyclerView.findViewById(R.id.trailerRecyclerView);
-        star.findViewById(R.id.star);
-        originalTitle.findViewById(R.id.original_title);
-        moviePoster.findViewById(R.id.movie_poster_image_thumbnail);
-        plotOverview.findViewById(R.id.plot_overview);
-        userRating.findViewById(R.id.user_rating);
-        releaseDate.findViewById(R.id.release_date);
-        author.findViewById(R.id.author);
-        content.findViewById(R.id.content);
-        trailer.findViewById(R.id.trailerListView);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-
-
-        reviewRecyclerView.setLayoutManager(layoutManager);
-        trailerRecyclerView.setLayoutManager(layoutManager);
-
-        // set if no UI change
-        reviewRecyclerView.setHasFixedSize(true);
-        trailerRecyclerView.setHasFixedSize(true);
-
-        // adapter links data
-        rAdapter = new ReviewAdapter(this, reviews);
-        tAdapter = new TrailerAdapter(this, (ArrayList<Trailer>) trailers, mTrailerOnClickListener);
-
-        reviewRecyclerView.setAdapter(rAdapter);
-        trailerRecyclerView.setAdapter(tAdapter);
+        star = findViewById(R.id.star);
+        originalTitle = findViewById(R.id.original_title);
+        moviePoster = findViewById(R.id.movie_poster_image_thumbnail);
+        plotOverview = findViewById(R.id.plot_overview);
+        userRating = findViewById(R.id.user_rating);
+        releaseDate = findViewById(R.id.release_date);
+        author = findViewById(R.id.author);
+        content = findViewById(R.id.content);
+        trailer = findViewById(R.id.trailerListView);
 
         Intent intent = getIntent();
         if (intent != null) {
             moviePage = intent.getParcelableExtra("Movie");
-            reviews = intent.getParcelableArrayListExtra("Review");
-            trailers = intent.getParcelableArrayListExtra("Trailer");
+            reviewPage = intent.getParcelableExtra("Review");
+            trailerPage = intent.getParcelableExtra("Trailer");
         }
 
         mDb = MovieDatabase.getInstance(getApplicationContext());
@@ -121,7 +95,7 @@ public class MovieDetails extends AppCompatActivity {
         });
 
         populateUI();
-        Log.d(TAG, "onCreate: !!!!" + moviePage + reviews + trailers);
+        Log.d(TAG, "onCreate: !!!!" + moviePage + reviewPage + trailerPage);
     }
 
     private void setFavorite(Boolean favorite) {
@@ -135,7 +109,7 @@ public class MovieDetails extends AppCompatActivity {
     }
 
     public void populateUI() {
-        if (moviePage != null && reviews != null && trailers != null) {
+        if (moviePage != null && reviewPage != null && trailerPage != null) {
             if (originalTitle != null) {
                 originalTitle.setText(moviePage.getOriginalTitle());
             }
@@ -153,15 +127,15 @@ public class MovieDetails extends AppCompatActivity {
             }
 
             if (author != null) {
-                reviewRecyclerView.setAdapter(rAdapter);
+                author.setText(reviewPage.getAuthor());
             }
 
             if (content != null) {
-                reviewRecyclerView.setAdapter(rAdapter);
+                content.setText(reviewPage.getContent());
             }
 
             if (trailer != null) {
-                trailer.setAdapter((ListAdapter) tAdapter);
+                 openTrailer(trailer);
             }
         }
         String poster = moviePage.getPosterThumbnail();
@@ -178,8 +152,8 @@ public class MovieDetails extends AppCompatActivity {
     }
 
     // on clicked trailer, send to youtube
-    public void openTrailer(String movieId) {
-        String urlAsString = String.valueOf(createTrailerUrl(movieId));
+    public void openTrailer(View view) {
+        String urlAsString = String.valueOf((createTrailerUrl(Constants.MOVIE_ID)));
         openYouTube(urlAsString);
     }
 
