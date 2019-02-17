@@ -7,21 +7,15 @@ public class Trailer implements Parcelable {
 
     private String mName;
     private String mKey;
-    private String mSite;
-    private String mUrl;
 
-    public Trailer(String name, String key, String site, String url) {
+    public Trailer(String name, String key) {
         this.mName = name;
         this.mKey = key;
-        this.mSite = site;
-        this.mUrl = url;
     }
 
     protected Trailer(Parcel in) {
         mName = in.readString();
         mKey = in.readString();
-        mSite = in.readString();
-        mUrl = in.readString();
     }
 
     public static final Creator<Trailer> CREATOR = new Creator<Trailer>() {
@@ -45,8 +39,6 @@ public class Trailer implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mName);
         dest.writeString(mKey);
-        dest.writeString(mSite);
-        dest.writeString(mUrl);
     }
 
     public String getName() {
@@ -63,21 +55,5 @@ public class Trailer implements Parcelable {
 
     public void setKey(String key) {
         this.mKey = key;
-    }
-
-    public String getSite() {
-        return mSite;
-    }
-
-    public void setSite(String site) {
-        this.mSite = site;
-    }
-
-    public String getUrl() {
-        return mUrl;
-    }
-
-    public void setUrl(String url) {
-        this.mUrl = url;
     }
 }

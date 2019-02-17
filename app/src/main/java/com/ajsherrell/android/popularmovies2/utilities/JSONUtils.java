@@ -115,18 +115,14 @@ public class JSONUtils {
 
                 // get single review at position 1 in the arraylist
                 JSONObject currentReview = jsonResultsArray.getJSONObject(i);
-
-                // extract the value for the key called "id"
-                String id = currentReview.getString("id");
+;
                 // extract the value for the key called "author"
                 String author = currentReview.getString("author");
                 // extract the value for the key called "content"
                 String content = currentReview.getString("content");
-                // extract the value for the key called "url"
-                String url = currentReview.getString("url");
 
                 //create a new {@link Review} object with the JSON response
-                Review reviewList = new Review(id, author, content, url);
+                Review reviewList = new Review(author, content);
 
                 data.add(reviewList);
 
@@ -169,16 +165,12 @@ public class JSONUtils {
                 // get single trailer at position 1 in the arraylist
                 JSONObject currentTrailer = jsonResultsArray.getJSONObject(i);
 
-                // extract the value for the key called "id"
+                // extract the value for the key called "name"
                 String name = currentTrailer.getString("name");
-                // extract the value for the key called "author"
+                // extract the value for the key called "key"
                 String key = currentTrailer.getString("key");
-                // extract the value for the key called "content"
-                String site = currentTrailer.getString("site");
-                // extract the value for the key called "url"
-                String url = currentTrailer.getString("url");
                 //create a new {@link Review} object with the JSON response
-                Trailer trailerList = new Trailer(name, key, site, url);
+                Trailer trailerList = new Trailer(name, key);
 
                 data.add(trailerList);
 

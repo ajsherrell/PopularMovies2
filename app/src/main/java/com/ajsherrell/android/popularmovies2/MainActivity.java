@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     MovieDetails movieDetails;
 
     private ArrayList<Movie> data = new ArrayList<>();
-    private List<FavoriteMovie> favoriteData = new ArrayList<>();
+
 
 
     private static RecyclerView mRecyclerView;
@@ -82,25 +82,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         loadMovieData(Constants.SORT_BY_POPULAR);
 
         mDb = MovieDatabase.getInstance(getApplicationContext());
-        setupViewModel();
     }
 
-    private void setupViewModel() {
-        ViewModel viewModel = ViewModelProviders.of(this).get(ViewModel.class);
-        viewModel.getFavoriteMovies().observe(this, new Observer<List<FavoriteMovie>>() {
-            @Override
-            public void onChanged(@Nullable List<FavoriteMovie> favoriteMovies) {
-                Log.d(TAG, "onChanged: Updating list of movies from LiveData in ViewModel");
-                if (favoriteMovies.size() > 0) {
-                    favoriteData.clear();
-                    favoriteData = favoriteMovies;
-                }
-                loadMovieData(Constants.SORT_BY_FAVORITE);
-            }
-        });
-    }
-
-    private void loadMovieData(String sortBy) {
+    public void loadMovieData(String sortBy) {
         FetchMovieTask task = new FetchMovieTask();
         task.execute(sortBy);
         showMoviePosterData();

@@ -50,7 +50,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             mClickHandler.onClick(movieList.get(adapterPosition));
-            Log.d(TAG, "onClick: was clicked!!!");
+            Log.d(TAG, "onClick: was clicked!!!" + v);
         }
     }
 

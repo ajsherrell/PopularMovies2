@@ -55,7 +55,7 @@ public class TrailerAdapter extends RecyclerView.Adapter
     @Override
     public void onBindViewHolder(@NonNull TrailerAdapter.ViewHolder viewHolder, int i) {
         Trailer trailer = trailerList.get(i);
-        viewHolder.trailerButton.setText(trailer.getName());
+        viewHolder.trailerTextView.setText(trailer.getName()); // todo: make clicked trailer?
     }
 
     @Override
@@ -64,11 +64,11 @@ public class TrailerAdapter extends RecyclerView.Adapter
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements OnClickListener, View.OnClickListener {
-        public Button trailerButton;
+        public TextView trailerTextView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            trailerButton = itemView.findViewById(R.id.trailerButton);
+            trailerTextView = itemView.findViewById(R.id.trailerList);
             itemView.setOnClickListener(this);
         }
 

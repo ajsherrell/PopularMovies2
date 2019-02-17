@@ -1,9 +1,12 @@
 package com.ajsherrell.android.popularmovies2;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,8 +32,10 @@ import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.ajsherrell.android.popularmovies2.Constants.MOVIE_ID;
+import static com.ajsherrell.android.popularmovies2.R.id.reviewRecyclerView;
 import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createReviewUrl;
 import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createTrailerUrl;
 
@@ -46,12 +51,16 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
     private Review reviewPage;
     private Trailer trailerPage;
 
+    MainActivity mainActivity;
+
     private static ArrayList<Review> reviewData = new ArrayList<>();
     private static ArrayList<Trailer> trailerData = new ArrayList<>();
+    private List<FavoriteMovie> favoriteData = new ArrayList<>();
 
     TrailerAdapter.OnClickListener mTrailerOnClickListener;
 
-    private static RecyclerView reviewRecyclerView;
+    private static RecyclerView mReviewRecyclerView;
+    private static RecyclerView mTrailerRecyclerView;
 
 
     private MovieDatabase mDb;
@@ -72,14 +81,14 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
     private ReviewAdapter rAdapter;
 
     // trailers
-    private Button trailer;
+    private TextView trailer;
     private TrailerAdapter tAdapter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(activity_movie_details);
+        setContentView(R.layout.activity_movie_details);
 
         // finders
         star = findViewById(R.id.star);
@@ -90,8 +99,10 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
         releaseDate = findViewById(R.id.release_date);
         author = findViewById(R.id.author);
         content = findViewById(R.id.content);
-        trailer = findViewById(R.id.trailerButton);
-        reviewRecyclerView = findViewById(R.id.reviewRecyclerView);
+        trailer = findViewById(R.id.trailerList);
+        mReviewRecyclerView = findViewById(R.id.reviewRecyclerView);
+        mTrailerRecyclerView = findViewById(R.id.trailerRecyclerView);
+
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -112,20 +123,25 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
 
         // review & trailer layout
         LinearLayoutManager reviewLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager trailerLayoutManger = new LinearLayoutManager(this);
 
-        reviewRecyclerView.setLayoutManager(reviewLayoutManager);
+        mReviewRecyclerView.setLayoutManager(reviewLayoutManager);
+        mTrailerRecyclerView.setLayoutManager(trailerLayoutManger);
 
-        reviewRecyclerView.setHasFixedSize(true);
+        mReviewRecyclerView.setHasFixedSize(true);
+        mTrailerRecyclerView.setHasFixedSize(true);
 
         rAdapter = new ReviewAdapter(this, reviewData);
         tAdapter = new TrailerAdapter(this, trailerData, mTrailerOnClickListener);
 
-        reviewRecyclerView.setAdapter(rAdapter);
+        mReviewRecyclerView.setAdapter(rAdapter);
+        mTrailerRecyclerView.setAdapter(tAdapter);
 
         loadReviewData(MOVIE_ID);
         loadTrailerData(MOVIE_ID);
 
         populateUI();
+        setupViewModel();
         Log.d(TAG, "onCreate: !!!!" + moviePage + reviewPage + trailerPage);
     }
 
@@ -164,7 +180,9 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
             if (content != null) {
                 content.setText(reviewPage.getContent());
             }
-
+            if (trailer != null) {
+                trailer.setText(trailerPage.getName());
+            }
         }
         String poster = moviePage.getPosterThumbnail();
         final String POSTER_URL = Constants.IMAGE_BASE_URL + Constants.POSTER_SIZE_THUMBNAIL + poster;
@@ -270,14 +288,29 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
         }
     }
 
-    // on clicked trailer, send to youtube
-    public void openTrailer(View view) {
-        String urlAsString = String.valueOf((createTrailerUrl(Constants.MOVIE_ID)));
-        openYouTube(urlAsString);
+    private void setupViewModel() {
+        ViewModel viewModel = ViewModelProviders.of(this).get(ViewModel.class);
+        viewModel.getFavoriteMovies().observe(this, new Observer<List<FavoriteMovie>>() {
+            @Override
+            public void onChanged(@Nullable List<FavoriteMovie> favoriteMovies) {
+                Log.d(TAG, "onChanged: Updating list of movies from LiveData in ViewModel");
+                if (favoriteMovies.size() > 0) {
+                    favoriteData.clear();
+                    favoriteData = favoriteMovies;
+                }
+                mainActivity.loadMovieData(Constants.SORT_BY_FAVORITE);
+            }
+        });
     }
 
-    private void openYouTube(String url) {
-        Uri webPage = Uri.parse(url);
+    // on clicked trailer, send to youtube
+    public void openTrailer(View view) {
+        String movieId = trailerPage.getKey();
+        openYouTube(movieId);
+    }
+
+    private void openYouTube(String id) {
+        Uri webPage = Uri.parse("http://www.youtube.com/watch?v=" + id);
         Intent intent = new Intent(Intent.ACTION_VIEW, webPage);
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
