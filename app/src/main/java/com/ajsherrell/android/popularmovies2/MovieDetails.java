@@ -116,7 +116,7 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
         AppExecutor.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                final LiveData<FavoriteMovie> favoriteMovie = mDb.movieDao().loadMovieById(Integer.parseInt(valueOf(moviePage.getId())));
+                final LiveData<FavoriteMovie> favoriteMovie = mDb.movieDao().loadMovieById(moviePage.getId());
                 setFavorite((favoriteMovie != null)? true : false);
             }
         });
@@ -137,8 +137,8 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
         mReviewRecyclerView.setAdapter(rAdapter);
         mTrailerRecyclerView.setAdapter(tAdapter);
 
-        loadReviewData(MOVIE_ID);
-        loadTrailerData(MOVIE_ID);
+        loadReviewData(moviePage.getId());
+        loadTrailerData(moviePage.getId());
 
         populateUI();
         setupViewModel();

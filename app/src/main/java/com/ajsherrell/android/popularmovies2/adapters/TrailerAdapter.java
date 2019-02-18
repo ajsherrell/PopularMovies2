@@ -44,7 +44,7 @@ public class TrailerAdapter extends RecyclerView.Adapter
     @Override
     public TrailerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         Context context = viewGroup.getContext();
-        int layoutForListItem = R.layout.activity_movie_details;
+        int layoutForListItem = R.layout.trailer_list;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 

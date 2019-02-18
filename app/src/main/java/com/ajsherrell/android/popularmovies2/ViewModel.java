@@ -21,7 +21,7 @@ public class ViewModel extends AndroidViewModel {
 
     private LiveData<List<FavoriteMovie>> favoriteMovies;
 
-    public ViewModel(@NonNull Application application) {
+    public ViewModel(@NonNull Application application, String movieId) {
         super(application);
         MovieDatabase database = MovieDatabase.getInstance(this.getApplication());
         favoriteMovies = database.movieDao().loadAllMovies();
