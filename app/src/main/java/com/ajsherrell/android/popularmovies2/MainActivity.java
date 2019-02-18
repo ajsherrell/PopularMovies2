@@ -1,13 +1,10 @@
 package com.ajsherrell.android.popularmovies2;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,7 +19,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ajsherrell.android.popularmovies2.adapters.MovieAdapter;
-import com.ajsherrell.android.popularmovies2.data.FavoriteMovie;
 import com.ajsherrell.android.popularmovies2.data.MovieDatabase;
 import com.ajsherrell.android.popularmovies2.model.Movie;
 import com.ajsherrell.android.popularmovies2.utilities.JSONUtils;
@@ -30,16 +26,12 @@ import com.ajsherrell.android.popularmovies2.utilities.NetworkUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
-import static com.ajsherrell.android.popularmovies2.Constants.MOVIE_ID;
 import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createMovieUrl;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-
-    MovieDetails movieDetails;
 
     private ArrayList<Movie> data = new ArrayList<>();
 

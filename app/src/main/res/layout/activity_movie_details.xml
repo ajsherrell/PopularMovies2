@@ -36,7 +36,7 @@
             android:id="@+id/movie_poster_image_thumbnail"
             android:layout_width="206dp"
             android:layout_height="261dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="1dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/movie_poster"
             android:cropToPadding="true"
@@ -76,7 +76,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/release_date"
             android:textColor="@color/colorPrimaryDark"
-            app:layout_constraintStart_toEndOf="@+id/user_rating"
+            app:layout_constraintStart_toEndOf="@+id/movie_poster_image_thumbnail"
             app:layout_constraintTop_toBottomOf="@+id/original_title" />
 
         <TextView
@@ -94,17 +94,19 @@
         <TextView
             android:id="@+id/plot_overview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="128dp"
             android:layout_marginStart="@dimen/details_padding"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="@dimen/details_padding"
+            android:layout_marginLeft="@dimen/details_padding"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:padding="@dimen/details_padding"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/user_rating_text" />
 
@@ -112,32 +114,44 @@
             android:id="@+id/star"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:contentDescription="@string/favorite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/release_date"
+            app:srcCompat="@drawable/ic_star_border" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/reviewRecyclerView"
+            android:layout_width="366dp"
+            android:layout_height="186dp"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:contentDescription="@string/favorite"
-            app:layout_constraintBottom_toTopOf="@+id/plot_overview"
+            android:layout_marginBottom="36dp"
+            android:padding="@dimen/details_padding"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/release_date_text"
-            app:layout_constraintTop_toBottomOf="@+id/release_date_text"
-            app:srcCompat="@drawable/ic_star_border" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/reviewRecyclerView"
-            android:layout_width="188dp"
-            android:layout_height="186dp"
-            app:layout_constraintEnd_toStartOf="@+id/trailerRecyclerView"
+            app:layout_constraintHorizontal_bias="0.482"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_rating_text"></android.support.v7.widget.RecyclerView>
+            app:layout_constraintTop_toBottomOf="@+id/plot_overview"></android.support.v7.widget.RecyclerView>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/trailerRecyclerView"
             android:layout_width="188dp"
-            android:layout_height="186dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:padding="@dimen/details_padding"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/movie_poster_image_thumbnail"
             app:layout_constraintTop_toBottomOf="@+id/star"></android.support.v7.widget.RecyclerView>
 
     </android.support.constraint.ConstraintLayout>

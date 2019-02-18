@@ -9,8 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ajsherrell.android.popularmovies2.MainActivity;
-import com.ajsherrell.android.popularmovies2.MovieDetails;
 import com.ajsherrell.android.popularmovies2.R;
 import com.ajsherrell.android.popularmovies2.model.Review;
 

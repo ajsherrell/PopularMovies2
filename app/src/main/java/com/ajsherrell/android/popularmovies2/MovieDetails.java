@@ -13,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,13 +33,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ajsherrell.android.popularmovies2.Constants.MOVIE_ID;
-import static com.ajsherrell.android.popularmovies2.R.id.reviewRecyclerView;
 import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createReviewUrl;
 import static com.ajsherrell.android.popularmovies2.utilities.NetworkUtils.createTrailerUrl;
 
-import static com.ajsherrell.android.popularmovies2.R.layout.activity_movie_details;
-import static java.lang.String.valueOf;
 
 public class MovieDetails extends AppCompatActivity implements TrailerAdapter.OnClickListener {
 
@@ -156,7 +151,7 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
     }
 
     public void populateUI() {
-        if (moviePage != null && reviewPage != null && trailerPage != null) {
+        if (moviePage != null) {
             if (originalTitle != null) {
                 originalTitle.setText(moviePage.getOriginalTitle());
             }
@@ -173,27 +168,17 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
                 releaseDate.setText(moviePage.getReleaseDate());
             }
 
-            if (author != null) {
-                author.setText(reviewPage.getAuthor());
-            }
+            String poster = moviePage.getPosterThumbnail();
+            final String POSTER_URL = Constants.IMAGE_BASE_URL + Constants.POSTER_SIZE_THUMBNAIL + poster;
+            if (poster != null) {
+                Picasso.with(this)
+                        .load(POSTER_URL.trim())
+                        .placeholder(R.drawable.ic_image)
+                        .error(R.drawable.ic_error_outline)
+                        .into(moviePoster);
 
-            if (content != null) {
-                content.setText(reviewPage.getContent());
+                Log.d(TAG, "populateUI: !!!" + POSTER_URL);
             }
-            if (trailer != null) {
-                trailer.setText(trailerPage.getName());
-            }
-        }
-        String poster = moviePage.getPosterThumbnail();
-        final String POSTER_URL = Constants.IMAGE_BASE_URL + Constants.POSTER_SIZE_THUMBNAIL + poster;
-        if (poster != null) {
-            Picasso.with(this)
-                    .load(POSTER_URL.trim())
-                    .placeholder(R.drawable.ic_image)
-                    .error(R.drawable.ic_error_outline)
-                    .into(moviePoster);
-
-            Log.d(TAG, "populateUI: !!!" + POSTER_URL);
         }
     }
 
@@ -211,6 +196,7 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
     public void onClick(Trailer clickedTrailer) {
         if (trailer != null) {
             openTrailer(trailer);
+            Log.d(TAG, "onClick: openTrailer!!!!" + clickedTrailer);
         }
     }
 
@@ -247,7 +233,7 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
             }
             rAdapter.notifyDataSetChanged();
             super.onPostExecute(review);
-            Log.d(TAG, "onPostExecute: !!!!" + review);
+            Log.d(TAG, "onPostExecute: review!!!!" + review);
         }
     }
 
@@ -284,7 +270,7 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
             }
             tAdapter.notifyDataSetChanged();
             super.onPostExecute(trailer);
-            Log.d(TAG, "onPostExecute: !!!" + trailer);
+            Log.d(TAG, "onPostExecute: trailer!!!" + trailer);
         }
     }
 
@@ -298,7 +284,7 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
                     favoriteData.clear();
                     favoriteData = favoriteMovies;
                 }
-                mainActivity.loadMovieData(Constants.SORT_BY_FAVORITE);
+              //  mainActivity.loadMovieData(Constants.SORT_BY_FAVORITE);
             }
         });
     }
