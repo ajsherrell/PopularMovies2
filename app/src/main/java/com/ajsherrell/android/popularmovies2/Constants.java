@@ -28,9 +28,6 @@ public class Constants {
     public static final String POSTER_SIZE_THUMBNAIL = "w185/";
     public static final String POSTER_SIZE_REGULAR = "w500/";
 
-    // movie ID
-    public static final String MOVIE_ID = Movie.getId();
-
     //database strings
     public static final Object LOCK = new Object();
 

@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -35,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private ArrayList<Movie> data = new ArrayList<>();
 
-
+    private static final String BUNDLE_RECYCLER_LAYOUT = "MainActivity.mRecyclerView.activity_main";
 
     private static RecyclerView mRecyclerView;
     private static TextView mErrorMessageDisplay;
@@ -43,12 +46,23 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private MovieDatabase mDb;
 
+    boolean isFavorite = false;
+
+    Parcelable mSavedRecyclerLayoutState;
+
     private static MovieAdapter mMovieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // persist Movie position
+        if (savedInstanceState != null) {
+            mSavedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(mSavedRecyclerLayoutState);
+            Log.d(TAG, "onCreate: onRestoreState!!!" + savedInstanceState);
+        }
 
         // finders
         mRecyclerView = findViewById(R.id.recyclerview_movies);
@@ -76,10 +90,23 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mDb = MovieDatabase.getInstance(getApplicationContext());
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, mRecyclerView.getLayoutManager().onSaveInstanceState());
+    }
+
     public void loadMovieData(String sortBy) {
-        FetchMovieTask task = new FetchMovieTask();
-        task.execute(sortBy);
-        showMoviePosterData();
+        if (sortBy == Constants.SORT_BY_FAVORITE) {
+            isFavorite = true;
+            mDb.movieDao().loadAllMovies();
+        } else {
+            isFavorite = false;
+            showErrorMessage();
+        }
+            FetchMovieTask task = new FetchMovieTask();
+            task.execute(sortBy);
+            showMoviePosterData();
     }
 
     private static void showMoviePosterData() {
@@ -137,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 showMoviePosterData();
                 data = movieData;
                 mMovieAdapter.add(movieData);
+                mRecyclerView.getLayoutManager().onRestoreInstanceState(mSavedRecyclerLayoutState);
             } else {
                 showErrorMessage();
                 Log.d(TAG, "onPostExecute: is not working!!!!!!??");

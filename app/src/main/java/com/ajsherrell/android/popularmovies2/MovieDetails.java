@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,13 +45,9 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
     private Review reviewPage;
     private Trailer trailerPage;
 
-    MainActivity mainActivity;
-
     private static ArrayList<Review> reviewData = new ArrayList<>();
     private static ArrayList<Trailer> trailerData = new ArrayList<>();
     private List<FavoriteMovie> favoriteData = new ArrayList<>();
-
-    TrailerAdapter.OnClickListener mTrailerOnClickListener;
 
     private static RecyclerView mReviewRecyclerView;
     private static RecyclerView mTrailerRecyclerView;
@@ -78,7 +73,6 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
     // trailers
     private TextView trailer;
     private TrailerAdapter tAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +121,7 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
         mTrailerRecyclerView.setHasFixedSize(true);
 
         rAdapter = new ReviewAdapter(this, reviewData);
-        tAdapter = new TrailerAdapter(this, trailerData, mTrailerOnClickListener);
+        tAdapter = new TrailerAdapter(this, trailerData);
 
         mReviewRecyclerView.setAdapter(rAdapter);
         mTrailerRecyclerView.setAdapter(tAdapter);
@@ -144,6 +138,7 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
         if (favorite) {
             isFavortie = true;
             star.setImageResource(R.drawable.ic_star);
+            // todo get movies
         } else {
             isFavortie = false;
             star.setImageResource(R.drawable.ic_star_border);
@@ -195,7 +190,7 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
     @Override
     public void onClick(Trailer clickedTrailer) {
         if (trailer != null) {
-            openTrailer(trailer);
+            openTrailer(clickedTrailer);
             Log.d(TAG, "onClick: openTrailer!!!!" + clickedTrailer);
         }
     }
@@ -290,9 +285,10 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
     }
 
     // on clicked trailer, send to youtube
-    public void openTrailer(View view) {
+    public void openTrailer(Trailer clickedTrailer) {
         String movieId = trailerPage.getKey();
         openYouTube(movieId);
+        Log.d(TAG, "openTrailer: clickedTrailer!!!" + clickedTrailer);
     }
 
     private void openYouTube(String id) {

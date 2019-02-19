@@ -23,17 +23,15 @@ public class TrailerAdapter extends RecyclerView.Adapter
 
     public static List<Trailer> trailerList;
     private Context mContext;
-    private OnClickListener mOnClickListener;
 
     // interface for clicklistener
     public interface OnClickListener {
-        void onClick(Trailer clickedTrailer);
+        void onClick(View view);
     }
 
-    public TrailerAdapter(Context context, ArrayList<Trailer> trailers, OnClickListener onClickListener) {
+    public TrailerAdapter(Context context, ArrayList<Trailer> trailers) {
         this.mContext = context;
         this.trailerList = trailers;
-        this.mOnClickListener = onClickListener;
 
         Log.d(TAG, "TrailerAdapter: !!!" + Integer.toString(trailers.size()));
     }
@@ -53,7 +51,7 @@ public class TrailerAdapter extends RecyclerView.Adapter
     @Override
     public void onBindViewHolder(@NonNull TrailerAdapter.ViewHolder viewHolder, int i) {
         Trailer trailer = trailerList.get(i);
-        viewHolder.trailerTextView.setText(trailer.getName()); // todo: make clicked trailer?
+        viewHolder.trailerTextView.setText(trailer.getName());
     }
 
     @Override
@@ -61,7 +59,7 @@ public class TrailerAdapter extends RecyclerView.Adapter
         return trailerList == null ? 0 : trailerList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements OnClickListener, View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView trailerTextView;
 
         public ViewHolder(@NonNull View itemView) {
@@ -72,15 +70,12 @@ public class TrailerAdapter extends RecyclerView.Adapter
 
         @Override
         public void onClick(View view) {
-
-        }
-
-        @Override
-        public void onClick(Trailer clickedTrailer) {
             int adapterPosition = getAdapterPosition();
-            mOnClickListener.onClick(trailerList.get(adapterPosition));
-            Log.d(TAG, "onClick: !!!!" + clickedTrailer);
+            this.onClick(trailerList.get(adapterPosition));
+            Log.d(TAG, "onClick: !!!!" + view);
+            // todo make this freakin work!!!
         }
+
     }
 
     public void add(ArrayList<Trailer> data) {
