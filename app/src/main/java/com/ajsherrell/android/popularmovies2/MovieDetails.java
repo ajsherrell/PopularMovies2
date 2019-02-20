@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -121,7 +122,7 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
         mTrailerRecyclerView.setHasFixedSize(true);
 
         rAdapter = new ReviewAdapter(this, reviewData);
-        tAdapter = new TrailerAdapter(this, trailerData);
+        tAdapter = new TrailerAdapter(this, trailerData, this);
 
         mReviewRecyclerView.setAdapter(rAdapter);
         mTrailerRecyclerView.setAdapter(tAdapter);
@@ -136,12 +137,11 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
 
     private void setFavorite(Boolean favorite) {
         if (favorite) {
-            isFavortie = true;
-            star.setImageResource(R.drawable.ic_star);
-            // todo get movies
-        } else {
             isFavortie = false;
             star.setImageResource(R.drawable.ic_star_border);
+        } else {
+            isFavortie = true;
+            star.setImageResource(R.drawable.ic_star);
         }
     }
 
@@ -175,6 +175,38 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
                 Log.d(TAG, "populateUI: !!!" + POSTER_URL);
             }
         }
+
+        // set favorite movie items
+        star.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final FavoriteMovie movie = new FavoriteMovie(
+                        moviePage.getId(),
+                        moviePage.getOriginalTitle(),
+                        moviePage.getPosterThumbnail(),
+                        moviePage.getPlotOverview(),
+                        moviePage.getUserRating(),
+                        moviePage.getReleaseDate()
+                );
+                AppExecutor.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isFavortie) {
+                            mDb.movieDao().deleteMovie(movie);
+                        } else {
+                            mDb.movieDao().insertMovie(movie);
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setFavorite(!isFavortie);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
     }
 
     public void loadReviewData(String movieId) {
@@ -189,7 +221,7 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
 
     @Override
     public void onClick(Trailer clickedTrailer) {
-        if (trailer != null) {
+        if (clickedTrailer != null) {
             openTrailer(clickedTrailer);
             Log.d(TAG, "onClick: openTrailer!!!!" + clickedTrailer);
         }
@@ -274,20 +306,19 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
         viewModel.getFavoriteMovies().observe(this, new Observer<List<FavoriteMovie>>() {
             @Override
             public void onChanged(@Nullable List<FavoriteMovie> favoriteMovies) {
-                Log.d(TAG, "onChanged: Updating list of movies from LiveData in ViewModel");
+                Log.d(TAG, "onChanged: Updating list of movies from LiveData in ViewModel!!!" + favoriteMovies);
                 if (favoriteMovies.size() > 0) {
                     favoriteData.clear();
                     favoriteData = favoriteMovies;
                 }
-              //  mainActivity.loadMovieData(Constants.SORT_BY_FAVORITE);
             }
         });
     }
 
     // on clicked trailer, send to youtube
     public void openTrailer(Trailer clickedTrailer) {
-        String movieId = trailerPage.getKey();
-        openYouTube(movieId);
+        String trailerKey = clickedTrailer.getKey();
+        openYouTube(trailerKey);
         Log.d(TAG, "openTrailer: clickedTrailer!!!" + clickedTrailer);
     }
 

@@ -23,16 +23,17 @@ public class TrailerAdapter extends RecyclerView.Adapter
 
     public static List<Trailer> trailerList;
     private Context mContext;
+    private OnClickListener mOnClickListener;
 
     // interface for clicklistener
     public interface OnClickListener {
-        void onClick(View view);
+        void onClick(Trailer trailer);
     }
 
-    public TrailerAdapter(Context context, ArrayList<Trailer> trailers) {
+    public TrailerAdapter(Context context, ArrayList<Trailer> trailers, OnClickListener clickListener) {
         this.mContext = context;
         this.trailerList = trailers;
-
+        this.mOnClickListener = clickListener;
         Log.d(TAG, "TrailerAdapter: !!!" + Integer.toString(trailers.size()));
     }
 
@@ -71,7 +72,7 @@ public class TrailerAdapter extends RecyclerView.Adapter
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            this.onClick(trailerList.get(adapterPosition));
+            mOnClickListener.onClick(trailerList.get(adapterPosition));
             Log.d(TAG, "onClick: !!!!" + view);
             // todo make this freakin work!!!
         }
