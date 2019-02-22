@@ -56,7 +56,7 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
 
     private MovieDatabase mDb;
     private ImageView star;
-    private boolean isFavortie = false;
+    private boolean isFavorite = false;
 
     // movie
     private TextView id;
@@ -136,11 +136,11 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
     }
 
     private void setFavorite(Boolean favorite) {
-        if (favorite) {
-            isFavortie = false;
+        if (!favorite) {
+            isFavorite = false;
             star.setImageResource(R.drawable.ic_star_border);
         } else {
-            isFavortie = true;
+            isFavorite = true;
             star.setImageResource(R.drawable.ic_star);
         }
     }
@@ -191,7 +191,7 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
                 AppExecutor.getInstance().diskIO().execute(new Runnable() {
                     @Override
                     public void run() {
-                        if (isFavortie) {
+                        if (isFavorite) {
                             mDb.movieDao().deleteMovie(movie);
                         } else {
                             mDb.movieDao().insertMovie(movie);
@@ -199,7 +199,7 @@ public class MovieDetails extends AppCompatActivity implements TrailerAdapter.On
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                setFavorite(!isFavortie);
+                                setFavorite(!isFavorite);
                             }
                         });
                     }

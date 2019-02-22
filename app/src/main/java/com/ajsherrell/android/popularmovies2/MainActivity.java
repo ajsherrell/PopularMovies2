@@ -57,12 +57,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // persist Movie position
-        if (savedInstanceState != null) {
-            mSavedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
-            mRecyclerView.getLayoutManager().onRestoreInstanceState(mSavedRecyclerLayoutState);
-            Log.d(TAG, "onCreate: onRestoreState!!!" + savedInstanceState);
-        }
+
 
         // finders
         mRecyclerView = findViewById(R.id.recyclerview_movies);
@@ -88,6 +83,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         loadMovieData(Constants.SORT_BY_POPULAR);
 
         mDb = MovieDatabase.getInstance(getApplicationContext());
+
+        // persist Movie position
+        if (savedInstanceState != null) {
+            mSavedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(mSavedRecyclerLayoutState);
+            Log.d(TAG, "onCreate: onRestoreState!!!" + savedInstanceState);
+        }
     }
 
     @Override
